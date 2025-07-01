@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="card" class="todo-app" aria-label="To-do list application">
+        <div class="title-div">
+          <h2 id="title-head">
+            Your To Do 
+          </h2>
+          <div class="select-div">
+            <select id="filter-tasks" aria-label="Filter tasks by status">
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+            <button
+              type="button"
+              id="theme-toggle-btn"
+              aria-label="Toggle theme"
+            >
+              <img id="light-img" src="Assets/light.png" alt="Light mode" />
+              <img id="dark-img" src="Assets/dark2.png" alt="Dark mode" />
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <input
+            type="text"
+            placeholder="Add New Task"
+            id="input-box"
+            aria-label="New task input"
+          />
+          <button id="add-task" aria-label="Add Task">
+            <img src="Assets/plusgrey3.png" alt="" />
+          </button>
+        </div>
+        <div class="list-items">
+          <ul id="list-container" aria-label="Task list"></ul>
+        </div>
+        <p id="task-count" class="cnt-var"></p>
+        <p class="footer-para">
+          "Doing what you love is the cornerstone of having abundance in your
+          life." - Wayne Dyer
+        </p>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
