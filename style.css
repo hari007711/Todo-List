@@ -67,6 +67,7 @@ ul li {
   align-items: center;
   margin-bottom: 10px;
   padding-left: 10px;
+  margin-right: 10px;
 }
 .task-checkbox {
   width: 18px;
