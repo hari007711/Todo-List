@@ -420,6 +420,7 @@
 
 // updateTaskCount();
 
+
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 const filterTasks = document.getElementById("filter-tasks");
