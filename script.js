@@ -2,26 +2,92 @@ const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 const filterTasks = document.getElementById("filter-tasks");
 const taskCount = document.getElementById("task-count");
+const selectText = document.getElementById("selectText");
+const options = document.querySelectorAll(".options");
+const showList = document.getElementById("select-list");
+const arrowIcon = document.getElementById("arrow-icon");
+let selectField = document.getElementById("filter-tasks");
+
+let selectedFilter = "all";
+
+selectField.onclick = function (e) {
+  e.stopPropagation();
+  showList.classList.toggle("hide-list");
+  arrowIcon.classList.toggle("rotate");
+};
+
+filterTasks.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    showList.classList.toggle("hide-list");
+    arrowIcon.classList.toggle("rotate");
+    const expanded = !showList.classList.contains("hide-list");
+    filterTasks.setAttribute("aria-expanded", expanded);
+    if (expanded) {
+      setTimeout(() => options[0].focus(), 0);
+    }
+  }
+});
+
+options.forEach((option, index) => {
+  option.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = options[index + 1] || options[0];
+      next.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prev = options[index - 1] || options[options.length - 1];
+      prev.focus();
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      option.click();
+    }
+  });
+
+  option.addEventListener("click", () => {
+    const selectedText = option.textContent.trim();
+    selectText.textContent = selectedText;
+    selectedFilter = selectedText.toLowerCase().replace("-", "");
+    showList.classList.add("hide-list");
+    arrowIcon.classList.remove("rotate");
+    filterTasks.setAttribute("aria-expanded", "false");
+    updateTaskCount();
+  });
+});
+
+document.addEventListener("click", () => {
+  showList.classList.add("hide-list");
+  arrowIcon.classList.remove("rotate");
+  filterTasks.setAttribute("aria-expanded", "false");
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    showList.classList.add("hide-list");
+    arrowIcon.classList.remove("rotate");
+    filterTasks.setAttribute("aria-expanded", "false");
+    filterTasks.focus();
+  }
+});
 
 function addTask() {
   inputBox.focus();
-
-  if (inputBox.value.trim() === "") {
+  const taskTextValue = inputBox.value.trim();
+  if (taskTextValue === "") {
     alert("Please enter the text");
     return;
   }
-
-  const taskTextValue = inputBox.value.trim();
-  const existingTasks = document.querySelectorAll(".task-text");
-  for (let i = 0; i < existingTasks.length; i++) {
-    if (existingTasks[i].textContent === taskTextValue) {
-      alert("This task already exists!");
-      return;
-    }
+  if (
+    [...document.querySelectorAll(".task-text")].some(
+      (task) => task.textContent === taskTextValue
+    )
+  ) {
+    alert("This task already exists!");
+    return;
   }
 
   const li = document.createElement("li");
-
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.className = "task-checkbox";
@@ -29,7 +95,6 @@ function addTask() {
     li.classList.toggle("checked", checkbox.checked);
     updateTaskCount();
   });
-
   checkbox.addEventListener("keypress", (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -42,16 +107,14 @@ function addTask() {
   const taskText = document.createElement("span");
   taskText.textContent = taskTextValue;
   taskText.className = "task-text";
-
+  taskText.tabIndex = 0;
   taskText.addEventListener("click", () => {
-    const currentText = taskText.textContent;
     const input = document.createElement("input");
     input.type = "text";
-    input.value = currentText;
+    input.value = taskText.textContent;
     input.className = "edit-input";
     taskText.innerHTML = "";
     taskText.appendChild(input);
-
     input.focus();
 
     input.addEventListener("keypress", (e) => {
@@ -64,16 +127,22 @@ function addTask() {
           alert("This task already exists! Please choose a different name.");
           input.focus();
         } else {
-          taskText.textContent = currentText;
+          taskText.textContent = taskTextValue;
         }
       }
     });
   });
 
   const deleteBtn = document.createElement("span");
-  deleteBtn.innerHTML = "\u00d7";
+  const img = document.createElement("img");
+  img.src = "Assets/remove.png";
+  img.title = "Delete this task";
+  img.alt = "Delete";
+  img.className = "delete-icon";
+  img.style.height = "20px";
   deleteBtn.className = "delete-btn";
-  deleteBtn.setAttribute("tabindex", "0");
+  deleteBtn.tabIndex = 0;
+  deleteBtn.appendChild(img);
 
   deleteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -93,64 +162,48 @@ function addTask() {
   li.appendChild(taskText);
   li.appendChild(deleteBtn);
   listContainer.appendChild(li);
-
   inputBox.value = "";
   updateTaskCount();
 }
 
 function isTaskNameDuplicate(newText, currentTask) {
-  const existingTasks = document.querySelectorAll(".task-text");
-  return Array.from(existingTasks).some(
+  return [...document.querySelectorAll(".task-text")].some(
     (task) => task !== currentTask && task.textContent === newText
   );
 }
 
 function updateTaskCount() {
-  const tasks = Array.from(listContainer.querySelectorAll("li"));
-  const filterValue = filterTasks.value;
+  const tasks = [...listContainer.querySelectorAll("li")];
   let filteredTasks = [];
-  let count = 0;
-
-  if (["az", "za"].includes(filterValue)) {
-    filteredTasks = tasks.slice();
-    filteredTasks.sort((a, b) => {
+  if (["az", "za"].includes(selectedFilter)) {
+    filteredTasks = [...tasks].sort((a, b) => {
       const textA = a.querySelector(".task-text").textContent.toLowerCase();
       const textB = b.querySelector(".task-text").textContent.toLowerCase();
-      return filterValue === "az"
+      return selectedFilter === "az"
         ? textA.localeCompare(textB)
         : textB.localeCompare(textA);
     });
-
     filteredTasks.forEach((task) => {
-      listContainer.appendChild(task);
       task.style.display = "flex";
-      if (!task.querySelector(".task-checkbox").checked) count++;
+      listContainer.appendChild(task);
     });
   } else {
     filteredTasks = tasks.filter((task) => {
-      const checkbox = task.querySelector(".task-checkbox");
-      if (filterValue === "all") return true;
-      if (filterValue === "completed") return checkbox.checked;
-      if (filterValue === "pending") return !checkbox.checked;
-      
-      return true;
+      const checked = task.querySelector(".task-checkbox").checked;
+      if (selectedFilter === "all") return true;
+      if (selectedFilter === "pending") return !checked;
+      if (selectedFilter === "completed") return checked;
     });
 
     tasks.forEach((task) => {
-      if (filteredTasks.includes(task)) {
-        task.style.display = "flex";
-        if (!task.querySelector(".task-checkbox").checked) count++;
-      } else {
-        task.style.display = "none";
-      }
+      task.style.display = filteredTasks.includes(task) ? "flex" : "none";
     });
   }
-
-  taskCount.textContent = `Your remaining todos: ${count}`;
+  const remaining = filteredTasks.filter(
+    (task) => !task.querySelector(".task-checkbox").checked
+  ).length;
+  taskCount.textContent = `Your remaining todos: ${remaining}`;
 }
-
-document.getElementById("add-task").addEventListener("click", addTask);
-filterTasks.addEventListener("change", updateTaskCount);
 
 const lightImg = document.getElementById("light-img");
 const darkImg = document.getElementById("dark-img");
@@ -171,7 +224,6 @@ toggleBtn.addEventListener("click", () => {
     taskAdd.style.color = "#fff";
     filterTasks.style.color = "#fff";
     filterTasks.style.background = "#000";
-
     document
       .querySelectorAll(".task-text")
       .forEach((el) => (el.style.color = "#fff"));
@@ -184,11 +236,11 @@ toggleBtn.addEventListener("click", () => {
     taskAdd.style.color = "#000";
     filterTasks.style.color = "#000";
     filterTasks.style.background = "#fff";
-
     document
       .querySelectorAll(".task-text")
       .forEach((el) => (el.style.color = "#000"));
   }
 });
 
+document.getElementById("add-task").addEventListener("click", addTask);
 updateTaskCount();

@@ -32,7 +32,7 @@
 }
 .row {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
   border-radius: 30px;
   margin-bottom: 25px;
@@ -55,8 +55,9 @@ button {
   margin-left: 15px;
   cursor: pointer;
   border-radius: 7px;
+  margin-top: 12px;
 }
-ul li {
+.item-list li {
   list-style: none;
   font-size: 16px;
   user-select: none;
@@ -75,9 +76,16 @@ ul li {
   accent-color: grey;
 }
 .task-text {
+  /* flex-grow: 1;
+  cursor: unset;
+  padding-left: 10px; */
+
   flex-grow: 1;
   cursor: unset;
   padding-left: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px;
 }
 .dark-text {
   flex-grow: 1;
@@ -87,28 +95,48 @@ ul li {
   font-size: 16px !important;
   color: #fff !important;
 }
-ul li.checked .task-text {
+.item-list li.checked .task-text {
   color: #555;
   text-decoration: line-through;
 }
-ul li span:not(.task-text) {
-  width: 40px;
+.item-list li span:not(.task-text) {
+  width: 31px;
   height: 40px;
-  font-size: 22px;
+  /* font-size: 22px; */
   color: #555;
   line-height: 40px;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
-ul li span:not(.task-text):hover {
-  background: #edeef0;
-  border-radius: 50%;
+.item-list li span:not(.task-text):hover {
+  /* background: #edeef0; */
+  /* border-radius: 50%; */
+}
+#select-list {
+  width: 125px;
+  background: #d7d6d6;
+  border-radius: 6px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+}
+.options {
+  width: 100%;
+  padding: 10px;
+  list-style: none;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 .out {
   border: 1px solid red;
 }
+.options:hover {
+  background: rgba(205, 205, 205, 1);
+}
 .list-items {
-  height: 274px;
+  height: 43vh;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -154,6 +182,33 @@ ul li span:not(.task-text):hover {
 }
 .delete-btn:hover {
   color: #ff4d4d;
+}
+.selector {
+  width: 125px;
+}
+#filter-tasks {
+  width: 100%;
+  padding: 7px 11px;
+  /* margin-bottom: ; */
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  /* border: #555; */
+  border: 1px solid grey;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+#filter-tasks img {
+  height: 12px;
+  transition: transform 0.5s;
+}
+.hide-list {
+  visibility: hidden;
+  display: none;
+}
+.rotate {
+  transform: rotate(180deg);
 }
 
 @media (min-width: 1900px) {
