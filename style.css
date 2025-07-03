@@ -76,10 +76,6 @@ button {
   accent-color: grey;
 }
 .task-text {
-  /* flex-grow: 1;
-  cursor: unset;
-  padding-left: 10px; */
-
   flex-grow: 1;
   cursor: unset;
   padding-left: 10px;
@@ -102,7 +98,6 @@ button {
 .item-list li span:not(.task-text) {
   width: 31px;
   height: 40px;
-  /* font-size: 22px; */
   color: #555;
   line-height: 40px;
   text-align: center;
@@ -189,10 +184,8 @@ button {
 #filter-tasks {
   width: 100%;
   padding: 7px 11px;
-  /* margin-bottom: ; */
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.7);
-  /* border: #555; */
   border: 1px solid grey;
   display: flex;
   align-items: center;

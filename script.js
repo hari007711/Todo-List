@@ -107,7 +107,7 @@ function addTask() {
   const taskText = document.createElement("span");
   taskText.textContent = taskTextValue;
   taskText.className = "task-text";
-  taskText.tabIndex = 0;
+  // taskText.tabIndex = 0;
   taskText.addEventListener("click", () => {
     const input = document.createElement("input");
     input.type = "text";
